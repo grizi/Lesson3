@@ -14,6 +14,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        Convert.selected = true
+        EURIn.selected = true
         
     }
 
@@ -21,7 +23,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-var convert = Converter()
+//var convert = Converter()
     
     @IBOutlet weak var label: UILabel!
     
@@ -42,6 +44,7 @@ var convert = Converter()
         EURIn.backgroundColor = UIColor.whiteColor()
         USDIn.backgroundColor = UIColor.greenColor()
         HRKIn.backgroundColor = UIColor.whiteColor()
+        EURIn.selected = false
     }
     @IBOutlet var HRKIn:UIButton!
     @IBAction func HRKIn(sender: UIButton) {
@@ -49,6 +52,7 @@ var convert = Converter()
         EURIn.backgroundColor = UIColor.whiteColor()
         USDIn.backgroundColor = UIColor.whiteColor()
         HRKIn.backgroundColor = UIColor.greenColor()
+        EURIn.selected = false
     }
     @IBOutlet var EUROut:UIButton!
     @IBAction func EUROut(sender: UIButton) {
@@ -74,15 +78,27 @@ var convert = Converter()
     @IBOutlet var Convert:UIButton!
     @IBAction func Convert(sender: UIButton) {
       //  self.label.text =
-      var x =  convert.converter(Double ((self.TextIn.text! as NSString).doubleValue),startCurrency:inCurrency!,targetCurrency:outCurrency!)
+      var x =  Converter.converter(Double ((self.TextIn.text! as NSString).doubleValue),startCurrency:inCurrency,targetCurrency:outCurrency!)
         self.label.text = String(format: "%.3f", x.convertedValue)
+        
+        if EUR == USD {
+            print("xcv")
+        }
+        if EUR > USD {
+            print("BUREK")
+            print(" MASTEN: ")
+            let burek = 1.e+2.$+3.h
+            print(burek)
+        }
+        
+        
     }
 }
 
 var inCurrency : Valuta?
 var outCurrency : Valuta?
 
-class Valuta
+struct Valuta
 {
     var currency:String
     var value:Double
@@ -92,18 +108,51 @@ class Valuta
         self.currency = currency
         self.value = value
     }
+
+    
+    
+}
+
+extension Valuta : Equatable{}
+    func ==(lhs: Valuta, rhs:Valuta) -> Bool {
+        return lhs.value == rhs.value
+    }
+
+extension Valuta : Comparable{}
+func <(lhs: Valuta, rhs:Valuta) -> Bool {
+    return lhs.value < rhs.value
+}
+func >(lhs: Valuta, rhs:Valuta) -> Bool {
+    return lhs.value > rhs.value
+}
+
+
+extension Double
+{
+    var e : Double {return self}
+    var $ : Double {return Converter.converter(self, startCurrency: USD, targetCurrency: EUR ).convertedValue}
+    var h : Double {return Converter.converter(self, startCurrency: HRK, targetCurrency: USD ).convertedValue}
+    
 }
 
 class Converter {
-    func converter (value:Double  , startCurrency:Valuta , targetCurrency:Valuta) -> (convertedValue:Double, targetCurrencyr:Valuta)
+   static func converter (value:Double  , var startCurrency:Valuta? , targetCurrency:Valuta) -> (convertedValue:Double, targetCurrencyr:Valuta)
     {
-        let convertedValue = value * (startCurrency.value / targetCurrency.value)
+        if startCurrency == nil {
+            startCurrency = EUR
+            
+            
+            
+        }
+        
+        let convertedValue = value * (startCurrency!.value / targetCurrency.value)
         let targetCurrencyr = targetCurrency
         return (convertedValue, targetCurrencyr)
     }
 }
 
 
+//let USD_ = Valuta(currency: "USD",value: 1.0)
 let USD = Valuta(currency: "USD",value: 1.0)
 let EUR = Valuta(currency: "EUR",value: 1.2)
 let HRK = Valuta(currency: "HRK",value: 0.16)
