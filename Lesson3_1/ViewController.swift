@@ -80,15 +80,12 @@ class ViewController: UIViewController {
       //  self.label.text =
       var x =  Converter.converter(Double ((self.TextIn.text! as NSString).doubleValue),startCurrency:inCurrency,targetCurrency:outCurrency!)
         self.label.text = String(format: "%.3f", x.convertedValue)
+      
         
-        if EUR == USD {
-            print("xcv")
-        }
         if EUR > USD {
-            print("BUREK")
-            print(" MASTEN: ")
-            let burek = 1.e+2.$+3.h
-            print(burek)
+        
+            let sum = 1.e+2.$+3.h
+            print(sum)
         }
         
         
